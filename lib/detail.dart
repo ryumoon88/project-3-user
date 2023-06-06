@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:http/http.dart' as http;
+import 'package:project_3_tablet/main.dart';
 import 'package:project_3_tablet/models/media.dart';
 import 'package:project_3_tablet/models/product.dart';
 
@@ -49,7 +50,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
   getProductData() async {
     var response = await http.get(
-        Uri.parse('http://192.168.1.15:3000/api/v1/products/${widget.productId}'));
+        Uri.parse('http://localhost:3000/api/v1/products/${widget.productId}'));
     var responseJson = jsonDecode(response.body);
     if (responseJson['status'] == 'success') {
       setState(() {
@@ -80,7 +81,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     itemBuilder: (context, index, realIndex) {
                       return CachedNetworkImage(
                         imageUrl: showedImages![index].path != ""
-                            ? "http://localhost:3000/api/uploads/${showedImages![index].fileName}"
+                            ? "http://localhost:3000/uploads/${showedImages![index].fileName}"
                             : showedImages![index].fileName,
                         fit: BoxFit.cover,
                         progressIndicatorBuilder: (context, url, progress) =>
@@ -101,7 +102,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 Expanded(
                   flex: 1,
                   child: Padding(
-                    padding: const EdgeInsets.all(10),
+                    padding:
+                        const EdgeInsets.only(left: 10, right: 10, top: 100),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -155,7 +157,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             scrollDirection: Axis.horizontal,
                             itemCount: product!.variants!.length,
                             itemBuilder: (context, index) {
-                              var HexColor;
                               return InkWell(
                                 borderRadius: BorderRadius.circular(40),
                                 onTap: () => setSelectedVariant(index),

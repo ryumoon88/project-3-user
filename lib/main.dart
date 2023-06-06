@@ -11,6 +11,23 @@ import 'package:project_3_tablet/models/product.dart';
 import 'package:project_3_tablet/featured.dart';
 import 'package:http/http.dart' as http;
 
+extension HexColor on Color {
+  /// String is in the format "aabbcc" or "ffaabbcc" with an optional leading "#".
+  static Color fromHex(String hexString) {
+    final buffer = StringBuffer();
+    if (hexString.length == 6 || hexString.length == 7) buffer.write('ff');
+    buffer.write(hexString.replaceFirst('#', ''));
+    return Color(int.parse(buffer.toString(), radix: 16));
+  }
+
+  /// Prefixes a hash sign if [leadingHashSign] is set to `true` (default is `true`).
+  String toHex({bool leadingHashSign = true}) => '${leadingHashSign ? '#' : ''}'
+      '${alpha.toRadixString(16).padLeft(2, '0')}'
+      '${red.toRadixString(16).padLeft(2, '0')}'
+      '${green.toRadixString(16).padLeft(2, '0')}'
+      '${blue.toRadixString(16).padLeft(2, '0')}';
+}
+
 class MyHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
@@ -90,7 +107,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _fetchProducts() async {
-    String url = "http://192.168.1.15:3000/api/v1/products";
+    String url = "http://localhost:3000/api/v1/products";
 
     var response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
@@ -292,9 +309,12 @@ class _HomePageState extends State<HomePage> {
                                     aspectRatio: (4 / 3),
                                     child: CachedNetworkImage(
                                       imageUrl: products[index]
-                                          .images!
-                                          .first
-                                          .fileName,
+                                                  .images!
+                                                  .first
+                                                  .path !=
+                                              ""
+                                          ? "http://localhost:3000/uploads/${products[index].images!.first.fileName}"
+                                          : products[index].images!.first.path,
                                       fit: BoxFit.fill,
                                       progressIndicatorBuilder:
                                           (context, url, progress) =>
@@ -405,9 +425,12 @@ class _HomePageState extends State<HomePage> {
                                     aspectRatio: (4 / 3),
                                     child: CachedNetworkImage(
                                       imageUrl: products[index]
-                                          .images!
-                                          .first
-                                          .fileName,
+                                                  .images!
+                                                  .first
+                                                  .path !=
+                                              ""
+                                          ? "http://localhost:3000/uploads/${products[index].images!.first.fileName}"
+                                          : products[index].images!.first.path,
                                       fit: BoxFit.fill,
                                       progressIndicatorBuilder:
                                           (context, url, progress) =>

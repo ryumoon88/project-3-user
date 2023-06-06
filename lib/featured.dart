@@ -25,7 +25,7 @@ class _FeaturedProductsPageState extends State<FeaturedProductsPage> {
   }
 
   void getProducts({int categoryIndex = 0, int limit = 18}) async {
-    String url = "http://192.168.1.15:3000/api/v1/products";
+    String url = "http://localhost:3000/api/v1/products";
 
     var response = await http.get(Uri.parse(url));
 

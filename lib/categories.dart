@@ -29,7 +29,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
   }
 
   Future<void> getProducts({int categoryIndex = 0}) async {
-    String url = "http://192.168.1.15:3000/api/v1/products";
+    String url = "http://localhost:3000/api/v1/products";
 
     if (categoryIndex != 0) {
       var category = productCategories[categoryIndex].id;
@@ -53,7 +53,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
 
   Future<void> getProductCategories() async {
     var response = await http
-        .get(Uri.parse("http://192.168.1.15:3000/api/v1/product-categories"));
+        .get(Uri.parse("http://localhost:3000/api/v1/product-categories"));
     Map<String, dynamic> responseJson = jsonDecode(response.body);
     if (responseJson['status'] == 'success') {
       setState(() {
