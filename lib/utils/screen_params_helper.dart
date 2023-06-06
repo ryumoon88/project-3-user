@@ -1,4 +1,4 @@
-import 'package:project_3_tablet/models/product_category.dart';
+import 'package:project_3_tablet/models/product.dart';
 
 class ProductScreenArguments {
   final Product product;

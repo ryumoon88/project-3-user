@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:project_3_tablet/about.dart';
@@ -6,11 +7,21 @@ import 'package:project_3_tablet/categories.dart';
 import 'package:project_3_tablet/detail.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:project_3_tablet/models/product_category.dart';
+import 'package:project_3_tablet/models/product.dart';
 import 'package:project_3_tablet/featured.dart';
 import 'package:http/http.dart' as http;
 
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+  }
+}
+
 void main() {
+  HttpOverrides.global = MyHttpOverrides();
   runApp(MyApp());
 }
 
@@ -69,31 +80,32 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  // List<Product> products = List.empty(growable: true);
   List<Product> products = [];
-
-  int? currentCategory;
 
   @override
   void initState() {
     super.initState();
-    getProducts();
+    _fetchProducts();
   }
 
-  Future<void> getProducts({int categoryIndex = 0}) async {
-    String url = "http://localhost:3000/api/v1/products";
+  Future<void> _fetchProducts() async {
+    String url = "http://192.168.1.15:3000/api/v1/products";
 
     var response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      var responseJson = jsonDecode(response.body);
 
-    var responseJson = jsonDecode(response.body);
-
-    if (responseJson['status'] == 'success') {
-      setState(() {
-        products.clear();
-        for (var el in responseJson['data']['products']) {
-          products.add(Product.fromJson(el));
-        }
-        currentCategory = categoryIndex;
-      });
+      if (responseJson['status'] == 'success') {
+        setState(() {
+          products = [];
+          for (var el in responseJson['data']['products']) {
+            products.add(Product.fromJson(el));
+          }
+        });
+      }
+    } else {
+      throw Exception('Failed to fetch products');
     }
   }
 
@@ -279,7 +291,10 @@ class _HomePageState extends State<HomePage> {
                                   AspectRatio(
                                     aspectRatio: (4 / 3),
                                     child: CachedNetworkImage(
-                                      imageUrl: products[index].imageUrl,
+                                      imageUrl: products[index]
+                                          .images!
+                                          .first
+                                          .fileName,
                                       fit: BoxFit.fill,
                                       progressIndicatorBuilder:
                                           (context, url, progress) =>
@@ -312,7 +327,7 @@ class _HomePageState extends State<HomePage> {
                                             ),
                                           ),
                                           Text(
-                                            "Stock: ${products[index].categoryId}",
+                                            "Stock: ${products[index].stocks}",
                                             style: TextStyle(
                                               fontSize: 9,
                                               color: Colors.grey,
@@ -389,7 +404,10 @@ class _HomePageState extends State<HomePage> {
                                   AspectRatio(
                                     aspectRatio: (4 / 3),
                                     child: CachedNetworkImage(
-                                      imageUrl: products[index].imageUrl,
+                                      imageUrl: products[index]
+                                          .images!
+                                          .first
+                                          .fileName,
                                       fit: BoxFit.fill,
                                       progressIndicatorBuilder:
                                           (context, url, progress) =>
@@ -422,7 +440,7 @@ class _HomePageState extends State<HomePage> {
                                             ),
                                           ),
                                           Text(
-                                            "Stock: ${products[index].categoryId}",
+                                            "Stock: ${products[index].stocks}",
                                             style: TextStyle(
                                               fontSize: 9,
                                               color: Colors.grey,

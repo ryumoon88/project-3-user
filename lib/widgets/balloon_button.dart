@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:project_3_tablet/models/product.dart';
+import 'package:project_3_tablet/models/product_category.dart';
 
 class CategoryButton extends StatefulWidget {
   const CategoryButton({

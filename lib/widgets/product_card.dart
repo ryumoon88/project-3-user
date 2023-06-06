@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:project_3_tablet/models/product_category.dart';
+import 'package:project_3_tablet/models/product.dart';
 
 class ProductCard extends StatelessWidget {
-  const ProductCard({super.key, required this.product});
-
   final Product product;
+  final VoidCallback? onShare; // Add the onShare named parameter
+
+  const ProductCard({
+    required this.product,
+    this.onShare, // Update the constructor
+  });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        // ProductScreenArguments args = ProductScreenArguments(product: product);
-        // GoRouter.of(context).go("/products/${product.id}");
         Navigator.pushNamed(context, '/detail', arguments: product.id);
       },
       borderRadius: const BorderRadius.all(Radius.circular(10)),
@@ -30,7 +32,7 @@ class ProductCard extends StatelessWidget {
             AspectRatio(
               aspectRatio: (4 / 3),
               child: CachedNetworkImage(
-                imageUrl: product.imageUrl,
+                imageUrl: product.images!.first.fileName,
                 fit: BoxFit.fill,
                 progressIndicatorBuilder: (context, url, progress) =>
                     const Center(
@@ -69,7 +71,8 @@ class ProductCard extends StatelessWidget {
                   ],
                 ),
               ),
-            )
+            ),
+            
           ],
         ),
       ),

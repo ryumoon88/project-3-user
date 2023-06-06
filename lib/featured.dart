@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:project_3_tablet/models/product_category.dart';
+import 'package:project_3_tablet/models/product.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:http/http.dart' as http;
@@ -25,7 +25,7 @@ class _FeaturedProductsPageState extends State<FeaturedProductsPage> {
   }
 
   void getProducts({int categoryIndex = 0, int limit = 18}) async {
-    String url = "http://localhost:3000/api/v1/products";
+    String url = "http://192.168.1.15:3000/api/v1/products";
 
     var response = await http.get(Uri.parse(url));
 
@@ -46,7 +46,7 @@ class _FeaturedProductsPageState extends State<FeaturedProductsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Products"),
+        title: const Text("Featured Product"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(10),
@@ -107,7 +107,7 @@ class ProductCard extends StatelessWidget {
             AspectRatio(
               aspectRatio: (4 / 3),
               child: CachedNetworkImage(
-                imageUrl: product.imageUrl,
+                imageUrl: product.images!.first.fileName,
                 fit: BoxFit.fill,
                 progressIndicatorBuilder: (context, url, progress) =>
                     const Center(
